@@ -1,0 +1,8 @@
+
+// -------- main Antenna data ------------- //
+Card ID: 0D00BCBE
+Card ID: 0D00BCBE
+Card ID: 0D00BCBE
+Card ID: 0D00BCBE
+
+// --------- Custom Antenna id ------------//
