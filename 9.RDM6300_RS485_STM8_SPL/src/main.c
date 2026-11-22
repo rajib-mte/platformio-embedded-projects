@@ -156,14 +156,23 @@ static void Out_Number(uint16_t n)
 /* =========================================================
    RFID (from project 6)
    ========================================================= */
-static void RFID_ClearOverrun(void)
+/* RX interrupt ring buffer: RFID bytes keep arriving while we
+   transmit, so they are stored here instead of being lost.
+   Old polling code overran the UART during each send, which
+   made scanning stop now and then. */
+#define RX_BUF_SIZE 64                                /* power of 2 */
+static volatile uint8_t rxBuf[RX_BUF_SIZE];
+static volatile uint8_t rxHead = 0;
+static uint8_t          rxTail = 0;
+
+/* UART1 RX full / overrun interrupt (vector 18) */
+void UART1_RX_IRQHandler(void) __interrupt(18)
 {
-    /* bytes that arrived while we were transmitting */
-    if (UART1_GetFlagStatus(UART1_FLAG_OR) == SET)
-    {
-        (void)UART1_ReceiveData8();
-        rfidIndex = 0;
-    }
+    uint8_t sr   = UART1->SR;     /* read SR then DR: clears RXNE and OR */
+    uint8_t d    = UART1->DR;
+    uint8_t next = (uint8_t)((rxHead + 1) & (RX_BUF_SIZE - 1));
+    (void)sr;
+    if (next != rxTail) { rxBuf[rxHead] = d; rxHead = next; }
 }
 
 static void RFID_SendCard(void)
@@ -171,7 +180,6 @@ static void RFID_SendCard(void)
     uint8_t i;
 
     cardCounter++;
-
     RS485_Begin();
     Out_String("Counter = ");
     Out_Number(cardCounter);
@@ -183,11 +191,10 @@ static void RFID_SendCard(void)
 
 static void RFID_Process(void)
 {
-    RFID_ClearOverrun();
-
-    while (UART1_GetFlagStatus(UART1_FLAG_RXNE) == SET)
+    while (rxTail != rxHead)
     {
-        uint8_t data = UART1_ReceiveData8();
+        uint8_t data = rxBuf[rxTail];
+        rxTail = (uint8_t)((rxTail + 1) & (RX_BUF_SIZE - 1));
 
         if (data == 0x02)                             /* STX */
         {
@@ -207,7 +214,6 @@ static void RFID_Process(void)
         }
     }
 }
-
 /* =========================================================
    MAIN
    ========================================================= */
@@ -216,6 +222,8 @@ void main(void)
     Clock_Init();
     UART0_Setup();
     UART1_Setup();
+    UART1_ITConfig(UART1_IT_RXNE_OR, ENABLE);       /* RFID RX by interrupt */
+    enableInterrupts();
 
     RS485_Begin();
     Out_String("STM8S003F3 RFID -> RS485\r\n");
