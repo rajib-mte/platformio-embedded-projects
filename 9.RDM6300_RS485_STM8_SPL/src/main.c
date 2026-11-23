@@ -215,6 +215,32 @@ static void RFID_Process(void)
     }
 }
 /* =========================================================
+   STATUS LEDs : PB5 + PB4 blink every 0.5 s (TIM2, non-blocking)
+   PB4/PB5 are true open-drain pins on the STM8S003 (no HIGH drive):
+   wire each LED as  3.3V/5V -> resistor (~1k) -> LED anode,
+   LED cathode -> PB5 / PB4.  Pin LOW = LED on.
+   ========================================================= */
+#define LED_PORT   GPIOA
+#define LED_PINS   (GPIO_PIN_1 | GPIO_PIN_2)
+
+static void LED_Setup(void)
+{
+    GPIO_Init(LED_PORT, (GPIO_Pin_TypeDef)LED_PINS, GPIO_MODE_OUT_OD_HIZ_SLOW);
+    /* TIM2: 16 MHz / 16384 = 976.6 Hz, overflow every 488 ticks = 0.5 s */
+    TIM2_TimeBaseInit(TIM2_PRESCALER_16384, 488);
+    TIM2_ClearFlag(TIM2_FLAG_UPDATE);
+    TIM2_Cmd(ENABLE);
+}
+
+static void LED_Process(void)
+{
+    if (TIM2_GetFlagStatus(TIM2_FLAG_UPDATE) == SET)
+    {
+        TIM2_ClearFlag(TIM2_FLAG_UPDATE);
+        GPIO_WriteReverse(LED_PORT, (GPIO_Pin_TypeDef)LED_PINS);
+    }
+}
+/* =========================================================
    MAIN
    ========================================================= */
 void main(void)
@@ -222,6 +248,7 @@ void main(void)
     Clock_Init();
     UART0_Setup();
     UART1_Setup();
+    LED_Setup();
     UART1_ITConfig(UART1_IT_RXNE_OR, ENABLE);       /* RFID RX by interrupt */
     enableInterrupts();
 
@@ -232,5 +259,6 @@ void main(void)
     while (1)
     {
         RFID_Process();
+        LED_Process();
     }
 }

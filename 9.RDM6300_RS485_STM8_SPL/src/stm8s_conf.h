@@ -7,6 +7,7 @@
 #include "stm8s_clk.h"
 #include "stm8s_gpio.h"
 #include "stm8s_tim4.h"
+#include "stm8s_tim2.h"
 #include "stm8s_uart1.h"
 
 /* Parameter checks off to save flash */
