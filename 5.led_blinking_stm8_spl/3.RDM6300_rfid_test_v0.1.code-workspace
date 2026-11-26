@@ -1,0 +1,20 @@
+{
+  "folders": [
+	{
+		"path": "../3.RDM6300_rfid_test_v0.1"
+	},
+	{
+		"name": "rdm6300_stm8",
+		"path": "../4.rdm6300_stm8_arduino_framework/rdm6300_stm8"
+	},
+	{
+		"name": "5.led_blinking_stm8_spl",
+		"path": "."
+	},
+	{
+		"name": "2.RDM6300_STM8_TEST_v0.1",
+		"path": "../../Embedded system/stm8-register-level-programming/PROJECT'S/2.RDM6300_STM8_TEST_v0.1"
+	}
+],
+  "settings": {}
+}

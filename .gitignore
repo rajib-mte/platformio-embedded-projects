@@ -1,8 +1,12 @@
+
 # ==========================================
 # PlatformIO
 # ==========================================
 
+# Local PlatformIO build directory
 .pio/
+
+# Local PlatformIO configuration/cache
 .platformio/
 
 # ==========================================
@@ -39,11 +43,17 @@ dist/
 !.vscode/launch.json
 
 # ==========================================
+# VS Code Workspace
+# ==========================================
+
+# Track workspace files for multi-PC development
+# *.code-workspace
+
+# ==========================================
 # IDE files
 # ==========================================
 
 .idea/
-*.code-workspace
 *.sublime-workspace
 *.sublime-project
 
@@ -51,17 +61,12 @@ dist/
 # Operating System
 # ==========================================
 
-# Windows
 Thumbs.db
 Desktop.ini
 $RECYCLE.BIN/
-
-# macOS
 .DS_Store
 .AppleDouble
 .LSOverride
-
-# Linux
 *~
 
 # ==========================================

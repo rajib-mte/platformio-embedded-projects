@@ -1,0 +1,39 @@
+﻿{
+    "folders":  [
+                    {
+                        "path":  "0.1_TTL_ESP32"
+                    },
+                    {
+                        "path":  "2.rfid_test_v0.1"
+                    },
+                    {
+                        "path":  "3.RDM6300_rfid_test_v0.1"
+                    },
+                    {
+                        "path":  "4.rdm6300_stm8_arduino_framework"
+                    },
+                    {
+                        "path":  "5.led_blinking_stm8_spl"
+                    },
+                    {
+                        "path":  "6.RDM6300_STM8_arduino"
+                    },
+                    {
+                        "path":  "7.RS485_ESP32"
+                    },
+                    {
+                        "path":  "8.NANO_RS485"
+                    },
+                    {
+                        "path":  "9.RDM6300_RS485_STM8_SPL"
+                    },
+                    {
+                        "path":  "10.RS485_RX_ESP32"
+                    }
+                ],
+    "settings":  {
+                     "platformio-ide.activateProjectOnTextEditorChange":  true
+                 }
+}
+
+
